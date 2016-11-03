@@ -5,10 +5,10 @@ import xml.etree.ElementTree as ET
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.feature_selection import RFECV
 from sklearn.model_selection import cross_val_score, cross_val_predict, KFold
-import pymorphy2
 
 from sklearn import metrics
 from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
 
 
 BANK_TRAIN_BASE = 'data/bank_train_2016.xml'
@@ -61,7 +61,9 @@ def train_and_test(train_base, test_base, items_list):
     X, y = load_data(train_base, items_list)
     vectorizer = CountVectorizer()
     X = vectorizer.fit_transform(X)
-    model = LogisticRegression()
+    model = MLPClassifier(alpha=1e-5, solver="lbfgs",
+                          hidden_layer_sizes=(100,), random_state=1)
+    # model = LogisticRegression()
     kf = KFold(n_splits=10)
     print('CROSS VALIDATION')
     i = 1
@@ -92,5 +94,5 @@ def train_and_test(train_base, test_base, items_list):
 
 if __name__ == '__main__':
     # uncomment the line you need
-    # train_and_test(BANK_TRAIN_BASE, BANK_TEST_BASE, BANK_LIST)
-    train_and_test(TKK_TRAIN_BASE, TKK_TEST_BASE, TKK_LIST)
+    train_and_test(BANK_TRAIN_BASE, BANK_TEST_BASE, BANK_LIST)
+    # train_and_test(TKK_TRAIN_BASE, TKK_TEST_BASE, TKK_LIST)
